@@ -1,0 +1,347 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "URL Shortener API",
+    "version": "1.0.0",
+    "description": "API para encurtamento, redirecionamento, atualização e exclusão de URLs."
+  },
+  "paths": {
+    "/shorten": {
+      "post": {
+        "summary": "Encurta uma URL",
+        "description": "Recebe uma URL original e retorna uma URL encurtada.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "originalUrl": {
+                    "type": "string",
+                    "example": "http://example.com"
+                  }
+                },
+                "required": ["originalUrl"]
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "URL encurtada com sucesso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "originalUrl": { "type": "string" },
+                      "shortUrl": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Erro ao encurtar a URL"
+            }
+          }
+        }
+      }
+    },
+    "/shorten/auth": {
+      "post": {
+        "summary": "Encurta uma URL com autenticação",
+        "description": "Encurta uma URL fornecida por um usuário autenticado.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "originalUrl": {
+                    "type": "string",
+                    "example": "http://example.com"
+                  }
+                },
+                "required": ["originalUrl"]
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "URL encurtada com sucesso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "shortUrl": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Erro ao encurtar a URL com autenticação"
+            }
+          }
+        }
+      }
+    },
+    "/redirect/{shortUrl}": {
+      "get": {
+        "summary": "Redireciona para a URL original",
+        "description": "Redireciona para a URL original a partir de um shortUrl.",
+        "parameters": [
+          {
+            "name": "shortUrl",
+            "in": "path",
+            "required": true,
+            "description": "O shortUrl a ser redirecionado.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": "Redirecionamento para a URL original"
+          },
+          "404": {
+            "description": "URL não encontrada"
+          },
+          "500": {
+            "description": "Erro ao redirecionar a URL"
+          }
+        }
+      }
+    },
+    "/urls/{id}": {
+      "put": {
+        "summary": "Atualiza uma URL",
+        "description": "Atualiza a URL original associada a um ID específico.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID da URL a ser atualizada.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "newOriginalUrl": {
+                    "type": "string",
+                    "example": "http://newexample.com"
+                  }
+                },
+                "required": ["newOriginalUrl"]
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "URL atualizada com sucesso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "message": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "URL não encontrada"
+            },
+            "500": {
+              "description": "Erro ao atualizar a URL"
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Exclui uma URL",
+        "description": "Exclui a URL associada a um ID específico.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID da URL a ser excluída.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "URL excluída com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "URL não encontrada"
+          },
+          "500": {
+            "description": "Erro ao excluir a URL"
+          }
+        }
+      }
+    },   
+    "/auth/register": {
+      "post": {
+        "summary": "Registro de usuário",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "example": "user123"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "user@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "password123"
+                  }
+                },
+                "required": ["username", "email", "password"]
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Usuário registrado com sucesso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "message": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Erro na requisição",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "error": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "summary": "Login do usuário",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "user@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "password123"
+                  }
+                },
+                "required": ["email", "password"]
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Login bem-sucedido",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "token": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Credenciais inválidas",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "error": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Erro ao fazer login",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "error": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
